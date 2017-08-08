@@ -1,10 +1,8 @@
 <template>
 
- <f7-page>
-    <f7-navbar title="Yale" back-link="Back"></f7-navbar>
-		<f7-block inner>
+ <div>
       <f7-searchbar
-          search-list="#search-list"
+          search-list="#Yale-list"
       
           placeholder="Search in list"
       
@@ -24,7 +22,7 @@
       </f7-list>
 
       
-      <f7-list class="searchbar-found" id="search-list">
+      <f7-list class="searchbar-found" id="Yale-list">
           <f7-list-item v-for="i in items" 
                         :title="i.MaVT + ' ' +i.TenVT"
                         :data= "i"              
@@ -32,20 +30,17 @@
           >
           </f7-list-item>
       </f7-list>
-		</f7-block>
-  </f7-page>
-
+</div>
 </template>
 
 <script>
-    import YaleJson from '../../json/Yale.json'
     
   export default {
     
     data: function () {
       return {
         items: [],
-        yale: YaleJson,
+        
         
       }
     },
@@ -62,10 +57,23 @@
       onDisable: function (event) {
         console.log('disable')
       },
-      
+      fetchData(){
+         $.getJSON('static/Yale.json',(data,status)=>{
+        if(status == "success")
+        {
+          this.items = data
+        }
+        else
+        {
+          console.log("JSON not load")
+        }
+      })
+        // this.items = this.phillips
+       
+      }
     },
-    mounted(){
-        this.items = this.yale
-    }
+   mounted(){
+      this.fetchData()
+    } 
   }
 </script>
