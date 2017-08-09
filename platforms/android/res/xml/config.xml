@@ -6,9 +6,9 @@
     </feature>
     <hook src="hooks/hookers.js" type="before_prepare" />
     <hook src="hooks/beforedep.js" type="before_deploy" />
-    <name>Cordova - Framework7 - Vue - Webpack Template</name>
+    <name>Invtr</name>
     <description>
-        Brand new cordova project!
+        Inventory for storage query
     </description>
     <author email="dev@cordova.apache.org" href="http://cordova.io">
         Apache Cordova Team

@@ -107,6 +107,12 @@
 				navigator.splashscreen.hide()
 			
 			startRedirectChecks()
+			// document.addEventListener("backbutton", onBackKeyDown, false);
+
+			// function onBackKeyDown() {
+			// 	// Handle the back button
+			// 	$route.back()
+			// }
 		})
 		
 		function startRedirectChecks() {
@@ -159,6 +165,10 @@
 			document.querySelector("#unavailable p").style.display = "block"
 			console.log('Can\'t connect to http://' + ipPort + '/')
 		}
+
+
+		
+
 		
 	</script>
 <script src="cordova.js"></script></body>

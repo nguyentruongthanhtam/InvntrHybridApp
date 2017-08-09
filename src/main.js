@@ -1,6 +1,6 @@
 // Import Vue
 import Vue from 'vue'
-
+// import Vuex from 'vuex'
 // Import F7
 import Framework7 from 'framework7'
 
@@ -24,9 +24,11 @@ import Routes from './routes.js'
 // Import App Component
 import App from './main.vue'
 
+
+
 // Init F7 Vue Plugin
 Vue.use(Framework7Vue)
-
+// Vue.use(Vuex)
 // Init App
 new Vue({
   el: '#app',
@@ -38,7 +40,7 @@ new Vue({
     /* Uncomment to enable Material theme: */
     material: true,
     routes: Routes,
-    swipePanel: 'left'
+    
   },
   // Register App Component
   components: {

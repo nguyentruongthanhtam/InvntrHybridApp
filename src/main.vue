@@ -11,16 +11,16 @@
 				<f7-navbar title="Control Center"></f7-navbar>
 				<f7-pages>
 					<f7-page>
-						
+						<f7-block-title v-show="dbLoaded">DB LOADED</f7-block-title>
 						<f7-block-title>Load page in panel</f7-block-title>
 						<f7-list>
 							<f7-list-item link="/about/" title="About"></f7-list-item>
-							<f7-list-item link="/form/" title="Form"></f7-list-item>
+							
 						</f7-list>
 						<f7-block-title>Load page in main view</f7-block-title>
 						<f7-list>
-							<f7-list-item link="/about/" title="About" link-view="#main-view" link-close-panel></f7-list-item>
-							<f7-list-item link="/form/" title="Form" link-view="#main-view" link-close-panel></f7-list-item>
+							<f7-list-item link="/items/" title="Items" link-view="#main-view" link-close-panel></f7-list-item>
+							
 						</f7-list>
 					</f7-page>
 				</f7-pages>
@@ -34,7 +34,7 @@
 				<!-- Pages -->
 				<f7-pages navbar-fixed >
 						
-					<f7-page tabs no-page-content toolbar-fixed>
+					<f7-page>
 						<f7-navbar class="bg-black">
 							<f7-nav-left>
 								<f7-link icon="icon-bars" open-panel="left"></f7-link>
@@ -46,22 +46,14 @@
 								<f7-link icon-material="info" href="/about/"></f7-link>
 							</f7-nav-right>
 						</f7-navbar>
-						<f7-page-content tab active id="phillipsTab">
-							<phillipsComp></phillipsComp>
+						<f7-page-content>
+							
 						</f7-page-content>
-						<f7-page-content tab id="yaleTab">
-							<yaleComp></yaleComp>
-						</f7-page-content>
-
-						<f7-toolbar tabbar labels bottom>
-							<f7-link icon-material="lightbulb_outline" text="Phillips" tab-link="#phillipsTab" active></f7-link>
-							<f7-link icon-material="lock_outline" text="Yale" tab-link="#yaleTab"></f7-link>
-						</f7-toolbar>
 						
 					</f7-page>
 				</f7-pages>
 			</f7-view>
-
+			
 		</f7-views>
 		
 		<!-- Popup -->
@@ -89,11 +81,11 @@
 						<f7-list form>
 							<f7-list-item>
 								<f7-label>Username</f7-label>
-								<f7-input name="username" placeholder="Username" type="text"></f7-input>
+								
 							</f7-list-item>
 							<f7-list-item>
 								<f7-label>Password</f7-label>
-								<f7-input name="password" type="password" placeholder="Password"></f7-input>
+								
 							</f7-list-item>
 						</f7-list>
 						<f7-list>
@@ -111,14 +103,39 @@
 </template>
 
 <script>
-	import phillipsComp from './assets/vue/pages/phillipsTab.vue'
-	import yaleComp from './assets/vue/pages/yaleTab.vue'
-	export default {
-		components: {
-			phillipsComp,
-			yaleComp
-		
-		},
+	//   import alasql from './static/alasql.min.js'
+	// require('/static/alasql.min.js')
+	
+	export default{
+		data(){
+			return{
+				dbLoaded : false,
+				item: "",
+				
+			}
 
+		},
+		methods:{
+			createDB()
+			{
+			},
+
+			
+
+		},
+		created(){
+			let db = new alasql.Database('inventoryDB')
+			db.exec('USE inventoryDB')
+			db.exec('CREATE TABLE IF NOT EXISTS PHILLIPS ( STT , MaVT , TenVT , DVT , K13 , K02 , K17 , K19 , SLTon )')	
+			
+			if(db.tables.PHILLIPS) this.dbLoaded = true
+			// console.log(db.tables.PHILLIPS)
+			// alasql.promise('SELECT * FROM PHILLIPS').then((data)=>{
+			// 	console.log(data)
+			// }).catch((err)=>{
+			// 	console.log(err)
+			// })
+			
+		}
 	}
 </script>
