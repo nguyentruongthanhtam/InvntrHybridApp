@@ -47,7 +47,7 @@
 							</f7-nav-right>
 						</f7-navbar>
 						<f7-page-content>
-							
+							<f7-button open-popup="#popup">Popup</f7-button>
 						</f7-page-content>
 						
 					</f7-page>
@@ -126,7 +126,7 @@
 		created(){
 			let db = new alasql.Database('inventoryDB')
 			db.exec('USE inventoryDB')
-			db.exec('CREATE TABLE IF NOT EXISTS PHILLIPS ( STT , MaVT , TenVT , DVT , K13 , K02 , K17 , K19 , SLTon )')	
+			db.exec('CREATE TABLE IF NOT EXISTS PHILLIPS ( STT , MaVT , TenVT , DVT , K13 , K02 , K17 , K19 , SLTon ,IMG )')	
 			
 			if(db.tables.PHILLIPS) this.dbLoaded = true
 			// console.log(db.tables.PHILLIPS)
@@ -135,7 +135,13 @@
 			// }).catch((err)=>{
 			// 	console.log(err)
 			// })
-			
+			let vm = this 
+			document.addEventListener("backbutton",onBackKeyDown, false);
+			function onBackKeyDown() {
+				// Handle the back button
+				console.log("BACK BUTTON PRESS")
+				vm.$router.back()
+			}
 		}
 	}
 </script>

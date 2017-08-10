@@ -1,5 +1,5 @@
 <template>
-	<f7-page>
+	<f7-page cached>
 		<f7-navbar title="About" back-link="Back"></f7-navbar>
 		<f7-block inner>
 			<h2>Inventory App for Storage Query</h2>

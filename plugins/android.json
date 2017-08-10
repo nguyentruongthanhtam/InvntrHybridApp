@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.example.template"
+        },
+        "cordova-sqlite-storage": {
+            "PACKAGE_NAME": "com.example.template"
         }
     },
     "dependent_plugins": {}
