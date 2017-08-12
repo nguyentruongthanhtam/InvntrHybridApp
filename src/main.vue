@@ -11,7 +11,7 @@
 				<f7-navbar title="Control Center"></f7-navbar>
 				<f7-pages>
 					<f7-page>
-						<f7-block-title v-show="dbLoaded">DB LOADED</f7-block-title>
+						
 						<f7-block-title>Load page in panel</f7-block-title>
 						<f7-list>
 							<f7-list-item link="/about/" title="About"></f7-list-item>
@@ -20,7 +20,7 @@
 						<f7-block-title>Load page in main view</f7-block-title>
 						<f7-list>
 							<f7-list-item link="/items/" title="Items" link-view="#main-view" link-close-panel></f7-list-item>
-							
+							<f7-list-item title="drop table" @click.prevent="dropDB"></f7-list-item>
 						</f7-list>
 					</f7-page>
 				</f7-pages>
@@ -47,9 +47,13 @@
 							</f7-nav-right>
 						</f7-navbar>
 						<f7-page-content>
-							<f7-button open-popup="#popup">Popup</f7-button>
+							<f7-block-title v-show="dbLoaded">DB LOADED</f7-block-title>
+							<f7-button @click.prevent href="/items/" fill color="blue" big>List</f7-button>
+							<f7-button @click.prevent href="/search/" fill color="green" big>search</f7-button>
 						</f7-page-content>
-						
+						<f7-fab color="pink" href="/form/" @click.prevent>
+							<f7-icon icon="icon-plus"></f7-icon>
+						</f7-fab>
 					</f7-page>
 				</f7-pages>
 			</f7-view>
@@ -111,37 +115,107 @@
 			return{
 				dbLoaded : false,
 				item: "",
+				dbOutput: "",
 				
 			}
 
 		},
 		methods:{
-			createDB()
+			loadDB()
 			{
-			},
+				// WORKING LOAD ENTRIES FROM DB
+				let db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' }, function (db) {
+				db.transaction(function (tx) {
+					let query = "SELECT * FROM PHILLIPS"
+						tx.executeSql(query,null,(tx,resultSet)=>{
+							for(var x = 0; x < resultSet.rows.length; x++) {
+								console.log("MA VT: " + resultSet.rows.item(x).MaVT +
+									", TEN VT: " + resultSet.rows.item(x).TenVT+
+									", K02: " + resultSet.rows.item(x).K02+
+									", IMG URI: " + resultSet.rows.item(x).IMG);
+							}
 
+						});
+					}, function (error) {
+						console.log('load DB transaction error: ' + error.message);
+					}, function () {
+						console.log("DB loaded");
+					});
+				});
+			},
+			dropDB(){
+				let vm = this 
+			document.addEventListener('deviceready', function() {
+				let db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' }, function (db) {
+					db.transaction(function (tx) {
+						tx.executeSql('DROP TABLE IF EXISTS PHILLIPS')
+						console.log("TABLE PHILLIPS DROPPED")
+			
+					}, function (error) {
+						console.log('transaction error: ' + error.message);
+					}, function () {
+						console.log('DROP TABLE transaction ok');
+					});
+
+				}, function (error) {
+					console.log('Open database ERROR: ' + JSON.stringify(error))
+				});
+			});
+			
+			}
 			
 
 		},
 		created(){
-			let db = new alasql.Database('inventoryDB')
-			db.exec('USE inventoryDB')
-			db.exec('CREATE TABLE IF NOT EXISTS PHILLIPS ( STT , MaVT , TenVT , DVT , K13 , K02 , K17 , K19 , SLTon ,IMG )')	
+			// let db = new alasql.Database('inventoryDB')
+			// db.exec('USE inventoryDB')
+			// db.exec('CREATE TABLE IF NOT EXISTS PHILLIPS ( STT , MaVT , TenVT , DVT , K13 , K02 , K17 , K19 , SLTon ,IMG )')	
 			
-			if(db.tables.PHILLIPS) this.dbLoaded = true
-			// console.log(db.tables.PHILLIPS)
+			// if(db.tables.PHILLIPS) this.dbLoaded = true
+			// // console.log(db.tables.PHILLIPS)
 			// alasql.promise('SELECT * FROM PHILLIPS').then((data)=>{
 			// 	console.log(data)
 			// }).catch((err)=>{
 			// 	console.log(err)
 			// })
+
+			//DATABASE INIT
 			let vm = this 
-			document.addEventListener("backbutton",onBackKeyDown, false);
-			function onBackKeyDown() {
-				// Handle the back button
-				console.log("BACK BUTTON PRESS")
-				vm.$router.back()
-			}
+			document.addEventListener('deviceready', function() {
+				let db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' }, function (db) {
+					db.transaction(function (tx) {
+						// tx.executeSql('DROP TABLE IF EXISTS PHILLIPS')
+						tx.executeSql('CREATE TABLE IF NOT EXISTS PHILLIPS (MaVT, TenVT, DVT, K02, K13, K17, K19, IMG)')
+					}, function (error) {
+						console.log('transaction error: ' + error.message);
+					}, function () {
+						console.log('CREATE TABLE transaction ok');
+						vm.dbLoaded = true
+					});
+
+				}, function (error) {
+					console.log('Open database ERROR: ' + JSON.stringify(error))
+				});
+			});
+			
+			
+			// document.addEventListener('deviceready', function() {
+			// 	console.log('ECHO test OK');
+			// window.sqlitePlugin.echoTest(function() {
+			// 	console.log('ECHO test OK');
+			// });
+			//  window.sqlitePlugin.selfTest(function() {
+			// 	console.log('SELF test OK');
+			// });
+			// });
+			// ============
+			
+			// document.addEventListener("backbutton",onBackKeyDown, false);
+			// function onBackKeyDown() {
+			// 	// Handle the back button
+			// 	console.log("BACK BUTTON PRESS")
+			// 	vm.$router.back()
+			// }
 		}
 	}
 </script>

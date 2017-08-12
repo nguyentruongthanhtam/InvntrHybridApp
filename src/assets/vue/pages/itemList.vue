@@ -2,10 +2,7 @@
   <f7-page>
 		<f7-navbar :title="title" back-link="Back"></f7-navbar>
 		<f7-block>
-            <f7-button @click.prevent="getItemsFromBD">
-                
-                LOAD DB
-            </f7-button>
+        
             <f7-preloader v-if="isLoading" color="red" ></f7-preloader>
 			<div class="data-table data-table-init-card" v-else>
                  <div class="card-header">
@@ -35,7 +32,12 @@
                                 
                                 <td class="numeric-cell">{{ item.MaVT }}</td>
                                 <td class="label-cell">{{ item.TenVT }}</td>
-                                <td class="numeric-cell">{{ item.SLTon }}</td>
+                                <td class="numeric-cell">{{ Number(item.K02)
+                                                            +Number(item.K13)
+                                                            +Number(item.K17)
+                                                            +Number(item.K19)
+                                 }}</td>
+                                
                                 <td class="tablet-only">{{ item.DVT }}</td>
                             </tr>
                             
@@ -51,13 +53,17 @@
 
 export default{
     name: 'itemList',
-    
+    computed:{
+			// slton:function(){
+			// 	return (Number(this.k02) +  Number(this.k13) +  Number(this.k17) +  Number(this.k19))
+			// }
+		},
     data(){
         return{
             title: "Item List View",
             items: [{}],
             item:{},
-            isLoading: false
+            isLoading: true
         }
     },
     methods:{
@@ -105,17 +111,56 @@ export default{
         //   console.log(obj)
         // this.$f7.popup('#itemView', true, true)
           this.item = obj
-          this.$router.load({url:'/item/'+this.item.STT})
-        }
+
+          this.$router.load({url:'/item/'+"edit/"+this.item.MaVT})  // open Item page with params of item.MaVT
+        },
+        loadDB()
+			{
+				// WORKING LOAD ENTRIES FROM DB
+                let vm = this
+				let db = window.sqlitePlugin.openDatabase({ name: 'my.db', location: 'default' }, function (db) {
+				db.transaction(function (tx) {
+					let query = "SELECT * FROM PHILLIPS"
+						tx.executeSql(query,null,(tx,resultSet)=>{
+							for(var x = 0; x < resultSet.rows.length; x++) {
+								console.log("MA VT" + resultSet.rows.item(x).MaVT +
+									", TEN VT: " + resultSet.rows.item(x).TenVT+
+									", K02: " + resultSet.rows.item(x).K02+
+									", IMG URI: " + resultSet.rows.item(x).IMG)
+                                let resObject = {}
+                                resObject['MaVT'] =  resultSet.rows.item(x).MaVT
+                                resObject['TenVT'] =  resultSet.rows.item(x).TenVT
+                                resObject['DVT'] =  resultSet.rows.item(x).DVT
+                                resObject['K02'] =  resultSet.rows.item(x).K02
+                                resObject['K13'] =  resultSet.rows.item(x).K13
+                                resObject['K17'] =  resultSet.rows.item(x).K17
+                                resObject['K19'] =  resultSet.rows.item(x).K19
+                                resObject['IMG'] =  resultSet.rows.item(x).IMG
+                                vm.items.push(resObject)
+                                vm.isLoading = false
+							}
+                            console.log("DB loaded : " + resultSet.rows.length + " records" )
+
+						});
+					}, function (error) {
+						console.log('load DB transaction error: ' + error.message);
+					}, function () {
+						console.log("DB loaded" + vm.items)
+                        
+					});
+				});
+			},
+
     },
     created(){
+        this.loadDB()
         // this.fetchDataP()
-        this.getItems()
-        this.getItemsAndroid()
-        this.getItemsFromBD()
+        // this.getItems()
+        // this.getItemsAndroid()
+        // this.getItemsFromBD()
        
-    }
-
+    },
+    
 }
 </script>
 
